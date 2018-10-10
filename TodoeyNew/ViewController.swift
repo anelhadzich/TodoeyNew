@@ -10,10 +10,13 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
     
-    let itemArray = ["jedan", "dva", "tri", "cetiri"]
+    var itemArray = ["jedan", "dva", "tri", "cetiri"]
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        itemArray = defaults.array(forKey: "ToDoListArray") as! [String]
 
         // Do any additional setup after loading the view.
     }
@@ -47,17 +50,35 @@ class ToDoListViewController: UITableViewController {
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
+ 
 
+    //MARK - Add New Items
     
+    
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+            //what will happend once user clicks add button
+            
+            self.itemArray.append(textField.text!)
+         
+            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
+            
+            self.tableView.reloadData()
+            
+        }
+        
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField
+        }
+        
+        alert.addAction(action)
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        present(alert, animated: true, completion: nil)
     }
-    */
-
+    
 }
